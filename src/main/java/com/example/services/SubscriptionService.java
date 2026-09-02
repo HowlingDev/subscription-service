@@ -1,0 +1,29 @@
+package com.example.services;
+
+import com.example.entities.SubscriptionEntity;
+import com.example.repositories.SubscriptionRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.OffsetDateTime;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class SubscriptionService {
+
+    private final SubscriptionRepository subscriptionRepository;
+
+    @Transactional(readOnly = true)
+    public List<SubscriptionEntity> getSubscriptionListToCancelPaidSubscription(OffsetDateTime dateTime) {
+        return subscriptionRepository.findByExpirationDateBeforeAndSubscriptionType(
+                dateTime, SubscriptionEntity.SubscriptionType.PAID
+        );
+    }
+
+    @Transactional
+    public void saveSubscription(SubscriptionEntity entity) {
+        subscriptionRepository.save(entity);
+    }
+}
