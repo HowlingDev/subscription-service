@@ -26,4 +26,15 @@ public class SubscriptionService {
     public void saveSubscription(SubscriptionEntity entity) {
         subscriptionRepository.save(entity);
     }
+
+    @Transactional(readOnly = true)
+    public SubscriptionEntity getSubscription(String login) {
+        return subscriptionRepository.findByLogin(login);
+    }
+
+    public SubscriptionEntity.SubscriptionType checkSubscription(SubscriptionEntity entity) {
+        return !(entity.getSubscriptionType() == SubscriptionEntity.SubscriptionType.PAID &&
+                entity.getExpirationDate().isAfter(OffsetDateTime.now())) ?
+                SubscriptionEntity.SubscriptionType.FREE : SubscriptionEntity.SubscriptionType.PAID;
+    }
 }

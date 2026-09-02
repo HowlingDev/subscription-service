@@ -8,6 +8,13 @@ eureka:
     service-url:
       defaultZone: {EUREKA_URL}
 
+logging:
+  level:
+    org.springframework.kafka: INFO
+    org.apache.kafka: INFO
+    org.springframework.kafka.transaction: TRACE
+    org.springframework.transaction: TRACE
+
 spring:
   application:
     name: subscription-service
@@ -31,6 +38,6 @@ spring:
     producer:
       bootstrap-servers: {KAFKA_BOOTSTRAP_SERVERS}
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
       enable:
         idempotence: true

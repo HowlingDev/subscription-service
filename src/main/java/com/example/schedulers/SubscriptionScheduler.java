@@ -1,5 +1,6 @@
 package com.example.schedulers;
 
+import com.example.dto.SubscriptionKafkaDto;
 import com.example.entities.SubscriptionEntity;
 import com.example.services.SubscriptionService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SubscriptionScheduler {
 
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, SubscriptionKafkaDto> kafkaTemplate;
     private final SubscriptionService subscriptionService;
     @Value("${spring.kafka.topics.cancel-event}")
     private String cancelEvent;
@@ -36,7 +37,7 @@ public class SubscriptionScheduler {
         entities.stream().forEach(entity -> {
             entity.setSubscriptionType(SubscriptionEntity.SubscriptionType.FREE);
             subscriptionService.saveSubscription(entity);
-            kafkaTemplate.send(cancelEvent, entity.getLogin());
+            kafkaTemplate.send(cancelEvent, new SubscriptionKafkaDto(entity.getLogin()));
         });
     }
 }

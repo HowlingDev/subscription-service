@@ -13,4 +13,6 @@ public interface SubscriptionRepository extends JpaRepository<SubscriptionEntity
     List<SubscriptionEntity> findByExpirationDateBeforeAndSubscriptionType(
             OffsetDateTime dateTime, SubscriptionEntity.SubscriptionType type
     );
+
+    SubscriptionEntity findByLogin(String login);
 }
