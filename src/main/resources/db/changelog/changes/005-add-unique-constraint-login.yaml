@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: 5-add-unique-constraint-login
+      author: grigoriy
+      comment: Создание ограничения уникальности на столбец login
+      preConditions:
+        - not:
+            - uniqueConstraintExists:
+                tableName: subscriptions
+                constraintName: unique_subscriptions_login
+      changes:
+        - addUniqueConstraint:
+            tableName: subscriptions
+            columnNames: login
+            constraintName: unique_subscriptions_login
+      rollback:
+        - dropUniqueConstraint:
+            tableName: subscriptions
+            constraintName: unique_subscriptions_login

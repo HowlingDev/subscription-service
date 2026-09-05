@@ -1,6 +1,8 @@
 package com.example.services;
 
+import com.example.dto.SubscriptionTypeDto;
 import com.example.entities.SubscriptionEntity;
+import com.example.exceptions.SubscriptionNotFoundException;
 import com.example.repositories.SubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,14 +29,16 @@ public class SubscriptionService {
         subscriptionRepository.save(entity);
     }
 
-    @Transactional(readOnly = true)
     public SubscriptionEntity getSubscription(String login) {
-        return subscriptionRepository.findByLogin(login);
+        return subscriptionRepository.findByLogin(login)
+                .orElseThrow(() -> new SubscriptionNotFoundException("Не удалось найти подписку с логином %s".formatted(login)));
     }
 
-    public SubscriptionEntity.SubscriptionType checkSubscription(SubscriptionEntity entity) {
+    public SubscriptionTypeDto checkSubscription(String login) {
+        SubscriptionEntity entity = getSubscription(login);
         return !(entity.getSubscriptionType() == SubscriptionEntity.SubscriptionType.PAID &&
                 entity.getExpirationDate().isAfter(OffsetDateTime.now())) ?
-                SubscriptionEntity.SubscriptionType.FREE : SubscriptionEntity.SubscriptionType.PAID;
+                new SubscriptionTypeDto(SubscriptionEntity.SubscriptionType.FREE) :
+                new SubscriptionTypeDto(SubscriptionEntity.SubscriptionType.PAID);
     }
 }

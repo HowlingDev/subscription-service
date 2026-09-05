@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: 6-change-column-type
+      author: grigoriy
+      comment: Смена типа для столбца subscription_type с varchar(10) на enum sub_type
+      preConditions:
+        - columnExists:
+            tableName: subscriptions
+            columnName: subscription_type
+        - not:
+            - sqlCheck:
+                expectedResult: false
+                sql: |
+                  SELECT EXISTS (SELECT 1 FROM subscriptions
+                  WHERE subscription_type NOT IN ('FREE', 'PAID') AND subscription_type IS NOT NULL)
+      changes:
+        - modifyDataType:
+            tableName: subscriptions
+            columnName: subscription_type
+            newDataType: sub_type
+            usingClause: subscription_type::sub_type
+      rollback:
+        - modifyDataType:
+            tableName: subscriptions
+            columnName: subscription_type
+            newDataType: varchar(10)

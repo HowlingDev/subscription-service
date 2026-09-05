@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: 4-drop-primary-key-from-subscriptions
+      author: grigoriy
+      comment: Удаление первичного ключа из таблицы subscriptions
+      preConditions:
+        - primaryKeyExists:
+            tableName: subscriptions
+            primaryKeyName: subscriptions_pkey
+      changes:
+        - dropPrimaryKey:
+            tableName: subscriptions
+            constraintName: subscriptions_pkey
+      rollback:
+        - addPrimaryKey:
+            tableName: subscriptions
+            columnNames: login
+            constraintName: subscriptions_pkey

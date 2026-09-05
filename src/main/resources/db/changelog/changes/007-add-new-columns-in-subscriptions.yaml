@@ -1,0 +1,59 @@
+databaseChangeLog:
+  - changeSet:
+      id: 7-add-new-columns-in-subscriptions
+      author: grigoriy
+      comment: Добавление новых столбцов в таблицу subscriptions
+      preConditions:
+        - not:
+            - columnExists:
+                tableName: subscriptions
+                columnName: subscription_id
+        - not:
+            - columnExists:
+                tableName: subscriptions
+                columnName: created_at
+        - not:
+            - columnExists:
+                tableName: subscriptions
+                columnName: updated_at
+        - not:
+            - columnExists:
+                tableName: subscriptions
+                columnName: deleted_at
+      changes:
+        - addColumn:
+            tableName: subscriptions
+            columns:
+              - column:
+                  name: subscription_id
+                  type: uuid
+                  remarks: Ключ для таблицы subscriptions
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamptz
+                  remarks: Время создания записи
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamptz
+                  remarks: Время последнего обновления записи
+              - column:
+                  name: deleted_at
+                  type: timestamptz
+                  remarks: Время удаления записи
+      rollback:
+        - dropColumn:
+            tableName: subscriptions
+            columnName: subscription_id
+        - dropColumn:
+            tableName: subscriptions
+            columnName: created_at
+        - dropColumn:
+            tableName: subscriptions
+            columnName: updated_at
+        - dropColumn:
+            tableName: subscriptions
+            columnName: deleted_at

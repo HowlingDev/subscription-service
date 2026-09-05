@@ -13,13 +13,19 @@ public class KafkaConfig {
 
     @Value("${spring.kafka.topics.cancel-event}")
     private String cancelEvent;
+    @Value("${spring.kafka.topics.partitions}")
+    private int partitions;
+    @Value("${spring.kafka.topics.replicas}")
+    private int replicas;
+    @Value("${spring.kafka.topics.min.insync.replicas}")
+    private String minIsr;
 
     @Bean
     public NewTopic createInvalidateSubscriptionCacheTopic() {
         return TopicBuilder.name(cancelEvent)
-                .partitions(3)
-                .replicas(3)
-                .configs(Map.of("min.insync.replicas", "2"))
+                .partitions(partitions)
+                .replicas(replicas)
+                .configs(Map.of("min.insync.replicas", minIsr))
                 .build();
     }
 }

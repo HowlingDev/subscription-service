@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id: 3-create-enum-for-sub-type
+      author: grigoriy
+      comment: Создание enum-типа sub_type для определения типа подписки
+      preConditions:
+        - not:
+            - sqlCheck:
+                expectedResult: false
+                sql: SELECT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'sub_type')
+      changes:
+        - sql: CREATE TYPE sub_type AS ENUM ('FREE', 'PAID')
+      rollback:
+        - sql: DROP TYPE sub_type

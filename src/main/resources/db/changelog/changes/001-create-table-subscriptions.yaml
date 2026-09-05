@@ -2,21 +2,33 @@ databaseChangeLog:
   - changeSet:
       id: 1-create-table-subscriptions
       author: grigoriy
+      comment: Создание таблицы для хранения информации о подписках
+      preConditions:
+        - not:
+            - tableExists:
+                tableName: subscriptions
       changes:
         - createTable:
             tableName: subscriptions
+            remarks: Таблица с информацией о подписке пользователя
             columns:
               - column:
                   name: login
                   type: varchar(100)
+                  remarks: Уникальный логин пользователя (из Keycloak)
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
                   name: subscription_type
                   type: varchar(10)
+                  remarks: Тип подписки
                   constraints:
                     nullable: false
               - column:
                   name: expiration_date
                   type: timestamptz
+                  remarks: Дата истечения подписки
+      rollback:
+        - dropTable:
+            tableName: subscriptions

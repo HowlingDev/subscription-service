@@ -22,7 +22,7 @@ public class SubscriptionScheduler {
     @Value("${spring.kafka.topics.cancel-event}")
     private String cancelEvent;
 
-    @Scheduled(fixedRate = 300000)
+    @Scheduled(fixedRateString = "${scheduler.fixed.rate}")
     @SchedulerLock(
             name = "SubscriptionScheduler_cancelPaidSubscription",
             lockAtMostFor = "PT1M"
@@ -36,6 +36,7 @@ public class SubscriptionScheduler {
         }
         entities.stream().forEach(entity -> {
             entity.setSubscriptionType(SubscriptionEntity.SubscriptionType.FREE);
+            entity.setUpdatedAt(OffsetDateTime.now());
             subscriptionService.saveSubscription(entity);
             kafkaTemplate.send(cancelEvent, new SubscriptionKafkaDto(entity.getLogin()));
         });
