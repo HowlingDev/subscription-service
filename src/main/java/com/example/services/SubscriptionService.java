@@ -29,13 +29,10 @@ public class SubscriptionService {
         subscriptionRepository.save(entity);
     }
 
-    public SubscriptionEntity getSubscription(String login) {
-        return subscriptionRepository.findByLogin(login)
-                .orElseThrow(() -> new SubscriptionNotFoundException("Не удалось найти подписку с логином %s".formatted(login)));
-    }
-
+    @Transactional(readOnly = true)
     public SubscriptionTypeDto checkSubscription(String login) {
-        SubscriptionEntity entity = getSubscription(login);
+        SubscriptionEntity entity = subscriptionRepository.findByLogin(login)
+                .orElseThrow(() -> new SubscriptionNotFoundException("Не удалось найти подписку с логином %s".formatted(login)));
         return !(entity.getSubscriptionType() == SubscriptionEntity.SubscriptionType.PAID &&
                 entity.getExpirationDate().isAfter(OffsetDateTime.now())) ?
                 new SubscriptionTypeDto(SubscriptionEntity.SubscriptionType.FREE) :

@@ -16,6 +16,5 @@ public interface SubscriptionRepository extends JpaRepository<SubscriptionEntity
             OffsetDateTime dateTime, SubscriptionEntity.SubscriptionType type
     );
 
-    @Transactional(readOnly = true)
     Optional<SubscriptionEntity> findByLogin(String login);
 }

@@ -36,7 +36,6 @@ public class SubscriptionScheduler {
         }
         entities.stream().forEach(entity -> {
             entity.setSubscriptionType(SubscriptionEntity.SubscriptionType.FREE);
-            entity.setUpdatedAt(OffsetDateTime.now());
             subscriptionService.saveSubscription(entity);
             kafkaTemplate.send(cancelEvent, new SubscriptionKafkaDto(entity.getLogin()));
         });
