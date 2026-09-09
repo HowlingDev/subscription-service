@@ -1,0 +1,22 @@
+databaseChangeLog:
+  - changeSet:
+      id: 8-add-new-primary-key-in-subscriptions
+      author: grigoriy
+      comment: Добавление нового ключа в таблице subscriptions
+      preConditions:
+        - not:
+            - primaryKeyExists:
+              tableName: subscriptions
+              primaryKeyName: subscriptions_pkey
+        - columnExists:
+            tableName: subscriptions
+            columnName: subscription_id
+      changes:
+        - addPrimaryKey:
+            tableName: subscriptions
+            columnNames: subscription_id
+            constraintName: subscriptions_pkey
+      rollback:
+        - dropPrimaryKey:
+            tableName: subscriptions
+            constraintName: subscriptions_pkey
